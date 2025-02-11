@@ -12,7 +12,7 @@ export const useAuth = () => {
         UtilsToast.error(error.message)
         return
       }
-      router.replace('/')
+      router.replace('/dashboard')
     } catch {
       UtilsToast.error('An unexpected error occurred')
     }
@@ -45,7 +45,7 @@ export const useAuth = () => {
         UtilsToast.error(error.message)
         return
       }
-      router.replace('/')
+      router.replace('/dashboard')
     } catch {
       UtilsToast.error('An unexpected error occurred')
     }
