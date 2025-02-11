@@ -1,3 +1,9 @@
-export default function PageHome() {
-  return <h1>Home page Smart Budget</h1>
+import NavBar from '@/components/pages/app/NavBar'
+
+export default async function PageHome() {
+  return (
+    <>
+      <NavBar />
+    </>
+  )
 }
