@@ -3,7 +3,7 @@ import WrapperDelimiter from '@/components/wrapper/WrapperDelimiter'
 import WrapperProtectedRoute from '@/components/wrapper/WrapperProtectedRoute'
 import { ROUTE_RENDER_CLAUSE } from '@/lib/constants/general'
 import { ROUTES } from '@/lib/constants/routes'
-import { Link } from 'wouter'
+import { Link } from 'react-router'
 
 export default function PageSignUp() {
   return (
@@ -13,7 +13,10 @@ export default function PageSignUp() {
           <FormSignUp />
           <p className='text-center text-sm text-white/40'>
             Already have an account?{' '}
-            <Link href={ROUTES.signIn.path} className='text-steel-blue-500/80'>
+            <Link
+              to={ROUTES.signIn.absolutePath}
+              className='text-steel-blue-500/80'
+            >
               Sign In
             </Link>
           </p>

@@ -33,7 +33,7 @@ export default function CustomInputColor({
       readOnly
     >
       <input
-        className='absolute top-1/2 -translate-y-1/2 left-3 w-10 h-10 cursor-pointer'
+        className='absolute top-1/2 -translate-y-1/2 left-3 w-10 h-12 cursor-pointer'
         type='color'
         name='color'
         id='color'
