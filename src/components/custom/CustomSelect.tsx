@@ -1,3 +1,5 @@
+import IconArrowSeparateVertical from '@/assets/svg/IconArrowSeparateVertical'
+
 export default function CustomSelect({
   label,
   id,
@@ -41,6 +43,7 @@ export default function CustomSelect({
           </option>
         ))}
       </select>
+      <IconArrowSeparateVertical className='absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none' />
     </div>
   )
 }

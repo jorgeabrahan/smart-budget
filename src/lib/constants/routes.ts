@@ -1,14 +1,18 @@
 export const ROUTES = {
   signIn: {
-    path: '/sign-in'
+    relativePath: 'sign-in',
+    absolutePath: '/sign-in'
   },
   signUp: {
-    path: '/sign-up'
+    relativePath: 'sign-up',
+    absolutePath: '/sign-up'
   },
   dashboard: {
-    path: '/dashboard',
+    relativePath: 'dashboard',
+    absolutePath: '/dashboard',
     profile: {
-      path: '/profile'
+      relativePath: 'profile',
+      absolutePath: '/dashboard/profile'
     }
   }
 }

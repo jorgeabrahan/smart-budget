@@ -1,19 +1,19 @@
-import { useLocation } from 'wouter'
+import { useNavigate } from 'react-router'
 import { supabase } from '../config/supabase'
-import { UtilsToast } from '../lib/utils/UtilsToast'
-import { ROUTES } from '../lib/constants/routes'
 import { FALLBACK_ERROR_MESSAGE } from '../lib/constants/errors'
+import { ROUTES } from '../lib/constants/routes'
+import { UtilsToast } from '../lib/utils/UtilsToast'
 import { useStoreSignedInUser } from '../stores/useStoreSignedInUser'
 
 export const useAuth = () => {
-  const [, navigate] = useLocation()
-  const reset = useStoreSignedInUser((store) => store.reset)
+  const navigate = useNavigate()
+  const resetSignedInUserStore = useStoreSignedInUser((store) => store.reset)
   const signIn = async (data: { email: string; password: string }) => {
     try {
       const { error } = await supabase.auth.signInWithPassword(data)
       if (error) throw error.message
-      reset()
-      navigate(ROUTES.dashboard.path, { replace: true })
+      resetSignedInUserStore()
+      navigate(ROUTES.dashboard.absolutePath, { replace: true })
     } catch (error) {
       UtilsToast.error(
         typeof error === 'string' ? error : FALLBACK_ERROR_MESSAGE
@@ -42,8 +42,8 @@ export const useAuth = () => {
         }
       ])
       if (resUserDetailsInsert.error) throw resUserDetailsInsert.error.message
-      reset()
-      navigate(ROUTES.dashboard.path, { replace: true })
+      resetSignedInUserStore()
+      navigate(ROUTES.dashboard.absolutePath, { replace: true })
     } catch (error) {
       UtilsToast.error(
         typeof error === 'string' ? error : FALLBACK_ERROR_MESSAGE
@@ -54,8 +54,8 @@ export const useAuth = () => {
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error.message
-      reset()
-      navigate(ROUTES.signIn.path, { replace: true })
+      resetSignedInUserStore()
+      navigate(ROUTES.signIn.absolutePath, { replace: true })
     } catch (error) {
       UtilsToast.error(
         typeof error === 'string' ? error : FALLBACK_ERROR_MESSAGE

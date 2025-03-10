@@ -1,13 +1,16 @@
-import { Link } from 'wouter'
 import WrapperDelimiter from '../wrapper/WrapperDelimiter'
 import { ROUTES } from '../../lib/constants/routes'
 import ContextMenuUserBubble from '../context-menu/ContextMenuUserBubble'
 import IconUser from '../../assets/svg/IconUser'
+import { Link } from 'react-router'
 
 export default function NavbarMain() {
   return (
     <WrapperDelimiter className='py-4 flex items-center justify-between gap-4'>
-      <Link href={ROUTES.dashboard.path} className='flex items-center gap-2'>
+      <Link
+        to={ROUTES.dashboard.absolutePath}
+        className='flex items-center gap-2'
+      >
         <img src='/smart-budget.webp' alt='Smart Budget Logo' className='w-7' />
         <span className='text-lg font-semibold'>Smart Budget</span>
       </Link>
@@ -16,7 +19,7 @@ export default function NavbarMain() {
           {
             label: 'Profile',
             icon: <IconUser />,
-            href: ROUTES.dashboard.profile.path
+            href: ROUTES.dashboard.profile.absolutePath
           }
         ]}
       />

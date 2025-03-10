@@ -1,4 +1,4 @@
-import { Link } from 'wouter'
+import { Link } from 'react-router'
 
 export default function CustomLinkAsButton({
   className = '',
@@ -13,7 +13,7 @@ export default function CustomLinkAsButton({
   return (
     <Link
       className={`px-5 py-2 rounded-lg text-sm font-semibold ${className}`}
-      href={href}
+      to={href}
       {...props}
     >
       {children}

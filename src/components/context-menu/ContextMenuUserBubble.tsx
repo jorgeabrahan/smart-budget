@@ -1,8 +1,8 @@
 import { useAuth } from '../../hooks/useAuth'
 import { UtilsFormat } from '../../lib/utils/UtilsFormat'
 import IconLogOut from '../../assets/svg/IconLogOut'
-import { Link } from 'wouter'
 import { useSignedIn } from '../../hooks/useSignedIn'
+import { Link } from 'react-router'
 
 interface ContextMenuItem {
   label: string
@@ -60,7 +60,7 @@ function ContextMenuItem({
 }: ContextMenuItem) {
   const isAnchor = href != null
   const Tag: React.ElementType = isAnchor ? Link : 'button'
-  const tagProps = isAnchor ? { href } : { onClick }
+  const tagProps = isAnchor ? { to: href } : { onClick }
   return (
     <Tag
       className='flex items-center justify-between gap-8 md:gap-16 text-left w-full text-white/60 hover:bg-night-600 transition-colors duration-300 p-2 rounded-lg text-sm font-semibold'
