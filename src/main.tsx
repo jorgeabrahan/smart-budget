@@ -4,7 +4,7 @@ import Routes from './Routes'
 import './styles/tailwind.css'
 
 createRoot(document.getElementById('root')!).render(
-  // <StrictMode>
-  // </StrictMode>
-  <Routes />
+  <StrictMode>
+    <Routes />
+  </StrictMode>
 )
