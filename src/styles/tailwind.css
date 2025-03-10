@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Poppins', sans-serif;
+
+  --color-night-900: #0a0a0a;
+  --color-night: #141414;
+  --color-night-700: #1f1f1f;
+  --color-night-600: #292929;
+
+  --color-steel-blue: #2380be;
+  --color-steel-blue-700: #268bcf;
+  --color-steel-blue-600: #3095d9;
+  --color-steel-blue-500: #419edc;
+}
+
+body {
+  color-scheme: dark;
+  @apply bg-night text-white/80;
+}
+
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+dialog::backdrop {
+  background-color: black;
+  opacity: 0.6;
+}
+dialog {
+  @apply w-full h-full max-w-none max-h-none mx-auto bg-transparent text-inherit;
+}
+dialog[open] {
+  @apply grid place-items-center;
+}
+select {
+  /* remove the default arrow on select */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+  /* ---------------------------------- */
+}
+
+button {
+  cursor: pointer;
+  @apply transition-transform duration-300;
+}
+
+.delimiter-horizontal-padding {
+  @apply px-4 lg:px-6 xl:px-8;
+}
+
+.field {
+  @apply bg-night-700 block w-full px-3 pt-8 pb-3 text-sm outline-none rounded-lg border border-white/40 focus:border-white/80 transition-colors duration-300;
+}
