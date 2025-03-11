@@ -41,7 +41,7 @@ export const useBudgetAccounts = () => {
     return true
   }
   const update = async (
-    budgetAccount: Omit<TypeAccountsRegistry, 'id' | 'id_user'>
+    budgetAccount: TypeAccountsRegistry
   ): Promise<boolean> => {
     if (!user) return false
     setIsUpdating(true)

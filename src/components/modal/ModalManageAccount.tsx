@@ -20,15 +20,13 @@ export default function ModalManageAccount() {
   const { create, isInserting, update, isUpdating } = useBudgetAccounts()
   const { budgetAccounts } = useBudgetAccounts()
   const { currencies, requestStatus } = useCurrencies()
-  const callbackOnSuccessFinish = (e: React.FormEvent<HTMLFormElement>) => {
-    e.currentTarget.reset()
-    setClose()
-  }
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    e.currentTarget.reset()
+    const form = e.currentTarget
+    if (!(form instanceof HTMLFormElement)) return
+
     const { name, description, idCurrency, color } = Object.fromEntries(
-      new FormData(e.currentTarget)
+      new FormData(form)
     ) as unknown as TypeFormManageAccount
     if (name.length > 40) {
       UtilsToast.error(
@@ -78,12 +76,14 @@ export default function ModalManageAccount() {
     if (action === MODAL_BASIC_ACTIONS.create) {
       const isSuccess = await create({
         name: name.trim(),
-        description,
+        description: description.trim(),
         id_currency: Number(idCurrency),
         color
       })
       if (isSuccess) {
-        return callbackOnSuccessFinish(e)
+        form.reset()
+        setClose()
+        return
       }
       UtilsToast.error('Something went wrong')
       return
@@ -91,12 +91,16 @@ export default function ModalManageAccount() {
     if (action === MODAL_BASIC_ACTIONS.edit && account) {
       const isSuccess = await update({
         name: name.trim(),
-        description,
+        description: description.trim(),
         id_currency: Number(idCurrency),
-        color
+        color,
+        id: account.id,
+        id_user: account.id_user
       })
       if (isSuccess) {
-        return callbackOnSuccessFinish(e)
+        form.reset()
+        setClose()
+        return
       }
       UtilsToast.error('Something went wrong')
       return

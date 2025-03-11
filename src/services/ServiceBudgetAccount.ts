@@ -25,12 +25,14 @@ export class ServiceBudgetAccount {
     }
   }
   static async update(
-    account: Omit<TypeAccountsRegistry, 'id' | 'id_user'>
+    account: TypeAccountsRegistry
   ): Promise<TypeRequestResponse<TypeAccountsRegistry | null>> {
     try {
       const { data, error } = await supabase
         .from('accounts')
         .update(account)
+        .eq('id', account.id)
+        .eq('id_user', account.id_user)
         .select()
         .maybeSingle()
       if (error) throw error
