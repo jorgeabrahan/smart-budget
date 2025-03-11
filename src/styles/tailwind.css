@@ -28,12 +28,8 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
-dialog::backdrop {
-  background-color: black;
-  opacity: 0.6;
-}
 dialog {
-  @apply w-full h-full max-w-none max-h-none mx-auto bg-transparent text-inherit;
+  @apply bg-black/60 fixed inset-0 w-full h-full max-w-none max-h-none mx-auto text-inherit;
 }
 dialog[open] {
   @apply grid place-items-center;
@@ -51,6 +47,17 @@ select {
 button {
   cursor: pointer;
   @apply transition-transform duration-300;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  @apply bg-white/80 rounded-full;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply bg-night-600 border border-white/80 rounded-full;
 }
 
 .delimiter-horizontal-padding {

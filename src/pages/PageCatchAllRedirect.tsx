@@ -13,7 +13,7 @@ export default function PageCatchAllRedirect() {
   }
   const isAuthenticated = user != null
   if (isAuthenticated) {
-    return <Navigate to={ROUTES.dashboard.absolutePath} />
+    return <Navigate to={ROUTES.root.dashboard.absolutePath} />
   }
-  return <Navigate to={ROUTES.signIn.absolutePath} />
+  return <Navigate to={ROUTES.root.signIn.absolutePath} />
 }

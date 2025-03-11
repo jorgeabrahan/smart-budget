@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import TabPlans from './tabs/TabPlans'
-import TabSubscriptions from './tabs/TabSubscriptions'
+import TabPlans from './profile-tabs/TabPlans'
+import TabSubscriptions from './profile-tabs/TabSubscriptions'
 
 const TABS = [
   {

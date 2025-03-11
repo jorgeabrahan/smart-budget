@@ -8,7 +8,7 @@ export default function NavbarMain() {
   return (
     <WrapperDelimiter className='py-4 flex items-center justify-between gap-4'>
       <Link
-        to={ROUTES.dashboard.absolutePath}
+        to={ROUTES.root.dashboard.absolutePath}
         className='flex items-center gap-2'
       >
         <img src='/smart-budget.webp' alt='Smart Budget Logo' className='w-7' />
@@ -19,7 +19,7 @@ export default function NavbarMain() {
           {
             label: 'Profile',
             icon: <IconUser />,
-            href: ROUTES.dashboard.profile.absolutePath
+            href: ROUTES.root.dashboard.profile.absolutePath
           }
         ]}
       />

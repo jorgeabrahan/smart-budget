@@ -13,7 +13,7 @@ export const useAuth = () => {
       const { error } = await supabase.auth.signInWithPassword(data)
       if (error) throw error.message
       resetSignedInUserStore()
-      navigate(ROUTES.dashboard.absolutePath, { replace: true })
+      navigate(ROUTES.root.dashboard.absolutePath, { replace: true })
     } catch (error) {
       UtilsToast.error(
         typeof error === 'string' ? error : FALLBACK_ERROR_MESSAGE
@@ -43,7 +43,7 @@ export const useAuth = () => {
       ])
       if (resUserDetailsInsert.error) throw resUserDetailsInsert.error.message
       resetSignedInUserStore()
-      navigate(ROUTES.dashboard.absolutePath, { replace: true })
+      navigate(ROUTES.root.dashboard.absolutePath, { replace: true })
     } catch (error) {
       UtilsToast.error(
         typeof error === 'string' ? error : FALLBACK_ERROR_MESSAGE
@@ -55,7 +55,7 @@ export const useAuth = () => {
       const { error } = await supabase.auth.signOut()
       if (error) throw error.message
       resetSignedInUserStore()
-      navigate(ROUTES.signIn.absolutePath, { replace: true })
+      navigate(ROUTES.root.signIn.absolutePath, { replace: true })
     } catch (error) {
       UtilsToast.error(
         typeof error === 'string' ? error : FALLBACK_ERROR_MESSAGE
