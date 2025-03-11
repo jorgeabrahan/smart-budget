@@ -11,7 +11,7 @@ import LayoutRoot from './layouts/LayoutRoot'
 export default function RoutesConfig() {
   return (
     <Routes>
-      <Route path={ROUTES.root.relativePath} element={<LayoutRoot />}>
+      <Route element={<LayoutRoot />}>
         <Route
           path={ROUTES.root.dashboard.relativePath}
           element={<LayoutDashboard />}
