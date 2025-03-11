@@ -11,7 +11,11 @@ export default function CustomInputColor({
   id: string
   children?: React.ReactNode
 }) {
-  const DEFAULT_COLOR = props.defaultValue ?? '#000000'
+  const DEFAULT_COLOR =
+    typeof props.defaultValue === 'string' &&
+    props.defaultValue.trim().length > 0
+      ? props.defaultValue
+      : '#000000'
   const textInputReference = useRef<HTMLInputElement>(null)
   const colorInputReference = useRef<HTMLInputElement>(null)
   return (
@@ -30,6 +34,7 @@ export default function CustomInputColor({
       style={{
         paddingLeft: '60px'
       }}
+      disabled={props?.disabled}
       readOnly
     >
       <input

@@ -5,8 +5,8 @@ import { useEffect } from 'react'
 
 export const usePlans = () => {
   const plans = useStorePlans((store) => store.plans)
-  const requestStatus = useStorePlans((store) => store.requestStatus)
   const setPlans = useStorePlans((store) => store.setPlans)
+  const requestStatus = useStorePlans((store) => store.requestStatus)
   const setRequestStatus = useStorePlans((store) => store.setRequestStatus)
   useEffect(() => {
     const loadPlans = async () => {

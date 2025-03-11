@@ -12,9 +12,9 @@ export default function CustomButton({
 }) {
   return (
     <button
-      className={`rounded-lg text-sm font-semibold ${
-        disabled && 'opacity-50'
-      } ${/\bp(-|x-|y-)/.test(className) ? '' : 'px-5 py-2'} ${className}`}
+      className={`text-sm font-semibold ${disabled && 'opacity-50'} ${
+        /\bp(-|x-|y-)/.test(className) ? '' : 'px-5 py-2'
+      } ${!className.includes('rounded-') && 'rounded-lg'} ${className}`}
       type={type}
       disabled={disabled}
       onMouseDown={(e) => {

@@ -3,21 +3,51 @@ import { TypeRequestResponse } from '@/lib/types/Request'
 import { TypeAccountsRegistry } from '@/lib/types/Tables'
 
 export class ServiceBudgetAccount {
-  static async create(account: TypeAccountsRegistry) {
+  static async create(
+    account: Omit<TypeAccountsRegistry, 'id'>
+  ): Promise<TypeRequestResponse<TypeAccountsRegistry | null>> {
     try {
-      const { error } = await supabase.from('accounts').insert(account)
+      const { data, error } = await supabase
+        .from('accounts')
+        .insert(account)
+        .select()
+        .maybeSingle()
       if (error) throw error
       return {
-        isSuccess: true,
+        data,
         error: null
       }
     } catch (error) {
       return {
-        isSuccess: false,
+        data: null,
         error
       }
     }
   }
+  static async update(
+    account: TypeAccountsRegistry
+  ): Promise<TypeRequestResponse<TypeAccountsRegistry | null>> {
+    try {
+      const { data, error } = await supabase
+        .from('accounts')
+        .update(account)
+        .eq('id', account.id)
+        .eq('id_user', account.id_user)
+        .select()
+        .maybeSingle()
+      if (error) throw error
+      return {
+        data,
+        error: null
+      }
+    } catch (error) {
+      return {
+        data: null,
+        error
+      }
+    }
+  }
+  static async delete() {}
   static async getAll(
     idUser: string
   ): Promise<TypeRequestResponse<TypeAccountsRegistry[]>> {

@@ -21,10 +21,10 @@ export default function WrapperProtectedRoute({
   }
   const isAuthenticated = user != null
   if (renderClause === ROUTE_RENDER_CLAUSE.authenticated && !isAuthenticated) {
-    return <Navigate to={ROUTES.signIn.absolutePath} />
+    return <Navigate to={ROUTES.root.signIn.absolutePath} />
   }
   if (renderClause === ROUTE_RENDER_CLAUSE.unauthenticated && isAuthenticated) {
-    return <Navigate to={ROUTES.dashboard.absolutePath} />
+    return <Navigate to={ROUTES.root.dashboard.absolutePath} />
   }
   return children
 }

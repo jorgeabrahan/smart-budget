@@ -6,21 +6,33 @@ import { ROUTES } from './lib/constants/routes'
 import { Route, Routes } from 'react-router'
 import LayoutDashboard from './layouts/LayoutDashboard'
 import PageCatchAllRedirect from './pages/PageCatchAllRedirect'
+import LayoutRoot from './layouts/LayoutRoot'
 
 export default function RoutesConfig() {
   return (
     <Routes>
-      <Route path={ROUTES.dashboard.relativePath} element={<LayoutDashboard />}>
-        <Route index element={<PageDashboard />} />
+      <Route path={ROUTES.root.relativePath} element={<LayoutRoot />}>
         <Route
-          path={ROUTES.dashboard.profile.relativePath}
-          element={<PageProfile />}
+          path={ROUTES.root.dashboard.relativePath}
+          element={<LayoutDashboard />}
+        >
+          <Route index element={<PageDashboard />} />
+          <Route
+            path={ROUTES.root.dashboard.profile.relativePath}
+            element={<PageProfile />}
+          />
+          <Route path='*' element={<PageCatchAllRedirect />} />
+        </Route>
+        <Route
+          path={ROUTES.root.signIn.relativePath}
+          element={<PageSignIn />}
+        />
+        <Route
+          path={ROUTES.root.signUp.relativePath}
+          element={<PageSignUp />}
         />
         <Route path='*' element={<PageCatchAllRedirect />} />
       </Route>
-      <Route path={ROUTES.signIn.relativePath} element={<PageSignIn />} />
-      <Route path={ROUTES.signUp.relativePath} element={<PageSignUp />} />
-      <Route path='*' element={<PageCatchAllRedirect />} />
     </Routes>
   )
 }

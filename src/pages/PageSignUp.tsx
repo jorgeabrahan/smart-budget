@@ -14,7 +14,7 @@ export default function PageSignUp() {
           <p className='text-center text-sm text-white/40'>
             Already have an account?{' '}
             <Link
-              to={ROUTES.signIn.absolutePath}
+              to={ROUTES.root.signIn.absolutePath}
               className='text-steel-blue-500/80'
             >
               Sign In

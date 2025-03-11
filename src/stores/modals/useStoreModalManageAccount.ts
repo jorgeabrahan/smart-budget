@@ -6,10 +6,7 @@ interface Store {
   action: keyof typeof MODAL_BASIC_ACTIONS
   account: TypeAccountsRegistry | null
   open: boolean
-  setOpen: (
-    action?: keyof typeof MODAL_BASIC_ACTIONS,
-    account?: TypeAccountsRegistry | null
-  ) => void
+  setOpen: (account?: TypeAccountsRegistry | null) => void
   setClose: () => void
 }
 const INITIAL_STATE = {
@@ -21,9 +18,10 @@ export const useStoreModalManageAccount = create<Store>((set) => ({
   action: INITIAL_STATE.action,
   account: INITIAL_STATE.account,
   open: INITIAL_STATE.open,
-  setOpen: (action = INITIAL_STATE.action, account = INITIAL_STATE.account) =>
+  setOpen: (account = INITIAL_STATE.account) =>
     set({
-      action,
+      action:
+        account != null ? MODAL_BASIC_ACTIONS.edit : MODAL_BASIC_ACTIONS.create,
       account,
       open: true
     }),

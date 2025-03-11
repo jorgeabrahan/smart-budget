@@ -1,11 +1,11 @@
-import { toast } from 'sonner'
+import { ExternalToast, toast } from 'sonner'
 
 export class UtilsToast {
   static success(message: string) {
     toast.success(message)
   }
-  static error(message: string) {
-    toast.error(message)
+  static error(message: string, options?: ExternalToast) {
+    toast.error(message, options)
   }
   static warning(message: string) {
     toast.warning(message)

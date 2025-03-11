@@ -33,7 +33,12 @@ export default function CustomSelect({
         name={id}
         id={id}
         disabled={disabled}
-        defaultValue='default'
+        defaultValue={
+          typeof props.defaultValue === 'string' &&
+          props.defaultValue.trim().length > 0
+            ? props.defaultValue
+            : 'default'
+        }
         {...props}
       >
         <option value='default'>[{defaultOptionLabel}]</option>

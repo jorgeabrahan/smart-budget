@@ -13,6 +13,6 @@ export interface TypeFormSignUp {
 export interface TypeFormManageAccount {
   name: string
   description: string
-  idCurrency: number
+  idCurrency: string
   color: string
 }

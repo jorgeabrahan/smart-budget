@@ -7,11 +7,13 @@ export default function WrapperModal({
   children,
   title = '',
   isOpen = false,
+  isClosingAllowed = true,
   onClose = () => {}
 }: {
   children: React.ReactNode
   title?: string
   isOpen?: boolean
+  isClosingAllowed?: boolean
   onClose?: () => void
 }) {
   const refDialog = useRef<HTMLDialogElement>(null)
@@ -27,15 +29,24 @@ export default function WrapperModal({
     const handleDialogClose = (e: MouseEvent) => {
       if (!(e.target instanceof HTMLElement)) return
       // this allows closing the dialog by clicking on the backdrop
-      if (e.target.hasAttribute('data-close-dialog-on-click')) {
+      if (
+        e.target.hasAttribute('data-close-dialog-on-click') &&
+        isClosingAllowed
+      ) {
         dialog.close()
         onClose()
       }
     }
+    const handleDialogKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isClosingAllowed) {
+        e.preventDefault()
+      }
+    }
     dialog.addEventListener('toggle', handleDialogToggle)
     dialog.addEventListener('click', handleDialogClose)
+    dialog.addEventListener('keydown', handleDialogKeydown)
     if (isOpen) {
-      dialog.showModal()
+      dialog.show()
     } else {
       dialog.close()
     }
@@ -43,8 +54,9 @@ export default function WrapperModal({
       if (!dialog) return
       dialog.removeEventListener('toggle', handleDialogToggle)
       dialog.removeEventListener('click', handleDialogClose)
+      dialog.removeEventListener('keydown', handleDialogKeydown)
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onClose, isClosingAllowed])
   return (
     <dialog ref={refDialog} data-close-dialog-on-click>
       <WrapperDelimiter className='max-w-md'>
@@ -53,7 +65,10 @@ export default function WrapperModal({
             <h3 className='font-semibold text-lg'>{title}</h3>
             <CustomButton
               className='bg-night-600 p-1 [&>*]:pointer-events-none'
-              onClick={onClose}
+              onClick={() => {
+                if (!isClosingAllowed) return
+                onClose()
+              }}
             >
               <IconXMark strokeWidth={2.5} size={20} />
             </CustomButton>
