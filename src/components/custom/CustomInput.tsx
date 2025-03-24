@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import IconEyeClosed from '../../assets/svg/IconEyeClosed'
-import IconEye from '../../assets/svg/IconEye'
+import { useState } from 'react';
+import IconEyeClosed from '../../assets/svg/IconEyeClosed';
+import IconEye from '../../assets/svg/IconEye';
 
 export default function CustomInput({
   label,
@@ -13,16 +13,16 @@ export default function CustomInput({
   labelClassName,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
-  label: string
-  id: string
-  type?: 'text' | 'password' | 'email' | 'color'
-  disabled?: boolean
-  children?: React.ReactNode
-  inputReference?: React.Ref<HTMLInputElement>
-  containerClassName?: string
-  labelClassName?: string
+  label: string;
+  id: string;
+  type?: 'text' | 'password' | 'email' | 'color' | 'date';
+  disabled?: boolean;
+  children?: React.ReactNode;
+  inputReference?: React.Ref<HTMLInputElement>;
+  containerClassName?: string;
+  labelClassName?: string;
 }) {
-  const [isShowingPassword, setIsShowingPassword] = useState(false)
+  const [isShowingPassword, setIsShowingPassword] = useState(false);
   return (
     <div
       className={`relative ${disabled && 'opacity-50'} ${containerClassName}`}
@@ -33,7 +33,7 @@ export default function CustomInput({
           !labelClassName?.includes('left-') && 'left-3'
         } ${labelClassName}`}
       >
-        {label}
+        {props.required && '*'} {label}
       </label>
       <input
         ref={inputReference}
@@ -57,5 +57,5 @@ export default function CustomInput({
       )}
       {children}
     </div>
-  )
+  );
 }

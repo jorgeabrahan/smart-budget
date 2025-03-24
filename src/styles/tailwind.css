@@ -46,18 +46,18 @@ select {
 
 button {
   cursor: pointer;
-  @apply transition-transform duration-300;
+  @apply transition-[transform,_background] duration-300;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 .scrollbar-thin::-webkit-scrollbar-track {
-  @apply bg-white/80 rounded-full;
+  @apply bg-transparent;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  @apply bg-night-600 border border-white/80 rounded-full;
+  @apply bg-night-600 border border-white/30 rounded-full;
 }
 
 .delimiter-horizontal-padding {

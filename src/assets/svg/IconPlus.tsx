@@ -2,8 +2,8 @@ export default function IconPlus({
   size = 20,
   strokeWidth = 1.5
 }: {
-  size?: number
-  strokeWidth?: number
+  size?: number;
+  strokeWidth?: number;
 }) {
   return (
     <svg
@@ -22,5 +22,5 @@ export default function IconPlus({
         strokeLinejoin='round'
       ></path>
     </svg>
-  )
+  );
 }

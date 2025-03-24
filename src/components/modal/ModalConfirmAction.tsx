@@ -19,7 +19,13 @@ export default function ModalConfirmAction() {
         >
           {settings.cancelLabel}
         </CustomButton>
-        <CustomButton className='bg-steel-blue' onClick={settings.onConfirm}>
+        <CustomButton
+          className='bg-steel-blue'
+          onClick={() => {
+            settings.onConfirm()
+            setClose()
+          }}
+        >
           {settings.confirmLabel}
         </CustomButton>
       </footer>

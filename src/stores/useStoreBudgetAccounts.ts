@@ -1,26 +1,27 @@
-import { REQUEST_STATUS } from '@/lib/constants/requests'
-import { TypeRequestStatus } from '@/lib/types/Request'
-import { TypeAccountsRegistry } from '@/lib/types/Tables'
-import { create } from 'zustand'
+import { REQUEST_STATUS } from '@/lib/constants/requests';
+import { TypeRequestStatus } from '@/lib/types/Request';
+import { TypeBudgetAccountsRegistry } from '@/lib/types/Tables';
+import { create } from 'zustand';
 
 interface Store {
-  budgetAccounts: TypeAccountsRegistry[]
-  requestStatus: TypeRequestStatus
-  addBudgetAccount: (budgetAccount: TypeAccountsRegistry) => void
-  updateBudgetAccount: (budgetAccount: TypeAccountsRegistry) => void
-  setBudgetAccounts: (budgetAccounts: TypeAccountsRegistry[]) => void
-  setRequestStatus: (requestStatus: TypeRequestStatus) => void
+  budgetAccounts: TypeBudgetAccountsRegistry[];
+  requestStatus: TypeRequestStatus;
+  addBudgetAccount: (budgetAccount: TypeBudgetAccountsRegistry) => void;
+  updateBudgetAccount: (budgetAccount: TypeBudgetAccountsRegistry) => void;
+  removeBudgetAccount: (id: number) => void;
+  setBudgetAccounts: (budgetAccounts: TypeBudgetAccountsRegistry[]) => void;
+  setRequestStatus: (requestStatus: TypeRequestStatus) => void;
 }
 const INITIAL_STATE = {
   budgetAccounts: [],
   requestStatus: REQUEST_STATUS.notStarted
-}
+};
 export const useStoreBudgetAccounts = create<Store>((set) => ({
   budgetAccounts: INITIAL_STATE.budgetAccounts,
   requestStatus: INITIAL_STATE.requestStatus,
   addBudgetAccount: (budgetAccount) =>
     set((state) => ({
-      budgetAccounts: [budgetAccount, ...state.budgetAccounts]
+      budgetAccounts: [...state.budgetAccounts, budgetAccount]
     })),
   updateBudgetAccount: (budgetAccount) =>
     set((state) => ({
@@ -28,9 +29,15 @@ export const useStoreBudgetAccounts = create<Store>((set) => ({
         account.id === budgetAccount.id ? budgetAccount : account
       )
     })),
+  removeBudgetAccount: (id) =>
+    set((state) => ({
+      budgetAccounts: state.budgetAccounts.filter(
+        (account) => account.id !== id
+      )
+    })),
   setBudgetAccounts: (budgetAccounts) => set({ budgetAccounts }),
   setRequestStatus: (requestStatus) =>
     set({
       requestStatus
     })
-}))
+}));

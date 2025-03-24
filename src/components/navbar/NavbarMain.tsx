@@ -1,8 +1,8 @@
-import WrapperDelimiter from '../wrapper/WrapperDelimiter'
-import { ROUTES } from '../../lib/constants/routes'
-import ContextMenuUserBubble from '../context-menu/ContextMenuUserBubble'
-import IconUser from '../../assets/svg/IconUser'
-import { Link } from 'react-router'
+import WrapperDelimiter from '../wrapper/WrapperDelimiter';
+import { ROUTES } from '../../lib/constants/routes';
+import ContextMenuUserBubble from '../context-menu/ContextMenuUserBubble';
+import IconUser from '../../assets/svg/IconUser';
+import { Link } from 'react-router';
 
 export default function NavbarMain() {
   return (
@@ -24,5 +24,5 @@ export default function NavbarMain() {
         ]}
       />
     </WrapperDelimiter>
-  )
+  );
 }
