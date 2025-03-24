@@ -1,4 +1,4 @@
-import IconArrowSeparateVertical from '@/assets/svg/IconArrowSeparateVertical'
+import IconArrowSeparateVertical from '@/assets/svg/IconArrowSeparateVertical';
 
 export default function CustomSelect({
   label,
@@ -6,24 +6,28 @@ export default function CustomSelect({
   disabled = false,
   options = [],
   defaultOptionLabel = 'Select an option',
+  containerClassName = '',
   ...props
 }: React.SelectHTMLAttributes<HTMLSelectElement> & {
-  label: string
-  id: string
-  disabled?: boolean
+  label: string;
+  id: string;
+  disabled?: boolean;
   options?: {
-    value: string
-    label: string
-  }[]
-  defaultOptionLabel?: string
+    value: string;
+    label: string;
+  }[];
+  defaultOptionLabel?: string;
+  containerClassName?: string;
 }) {
   return (
-    <div className={`relative ${disabled && 'opacity-50'}`}>
+    <div
+      className={`relative ${disabled && 'opacity-50'} ${containerClassName}`}
+    >
       <label
         htmlFor={id}
         className='absolute left-3 top-3 text-xs text-white/40'
       >
-        {label}
+        {props.required && '*'} {label}
       </label>
       <select
         className='field'
@@ -37,6 +41,8 @@ export default function CustomSelect({
           typeof props.defaultValue === 'string' &&
           props.defaultValue.trim().length > 0
             ? props.defaultValue
+            : typeof props.value === 'string' && props.value.trim().length > 0
+            ? undefined
             : 'default'
         }
         {...props}
@@ -50,5 +56,5 @@ export default function CustomSelect({
       </select>
       <IconArrowSeparateVertical className='absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none' />
     </div>
-  )
+  );
 }

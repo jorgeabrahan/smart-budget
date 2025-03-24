@@ -4,9 +4,9 @@ export default function CustomTextarea({
   disabled = false,
   ...props
 }: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-  label: string
-  id: string
-  disabled?: boolean
+  label: string;
+  id: string;
+  disabled?: boolean;
 }) {
   return (
     <div className={`relative ${disabled && 'opacity-50'}`}>
@@ -14,7 +14,7 @@ export default function CustomTextarea({
         htmlFor={id}
         className='absolute left-3 top-3 text-xs text-white/40'
       >
-        {label}
+        {props.required && '*'} {label}
       </label>
       <textarea
         className='field resize-none'
@@ -24,5 +24,5 @@ export default function CustomTextarea({
         {...props}
       ></textarea>
     </div>
-  )
+  );
 }

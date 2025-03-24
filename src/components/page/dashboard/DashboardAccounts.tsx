@@ -1,24 +1,23 @@
-import IconPlus from '@/assets/svg/IconPlus'
-import CustomButton from '@/components/custom/CustomButton'
-import { useBudgetAccounts } from '@/hooks/useBudgetAccounts'
-import { useStoreModalManageAccount } from '@/stores/modals/useStoreModalManageAccount'
-import BudgetAccount from './dashboard-accounts/BudgetAccount'
-import { useStoreModalConfirmAction } from '@/stores/modals/useStoreModalConfirmAction'
+import IconPlus from '@/assets/svg/IconPlus';
+import CustomButton from '@/components/custom/CustomButton';
+import { useBudgetAccounts } from '@/hooks/useBudgetAccounts';
+import { MANAGER_MODALS } from '@/lib/constants/modals';
+import { useStoreModalConfirmAction } from '@/stores/modals/useStoreModalConfirmAction';
+import { useStoreModalManager } from '@/stores/modals/useStoreModalManager';
+import BudgetAccount from './dashboard-accounts/BudgetAccount';
 
 export default function DashboardAccounts() {
-  const { budgetAccounts } = useBudgetAccounts()
-  const openModalManageAccount = useStoreModalManageAccount(
-    (store) => store.setOpen
-  )
+  const { budgetAccounts, remove, isDeleting } = useBudgetAccounts();
+  const openModalManageAccount = useStoreModalManager((store) => store.setOpen);
   const openModalConfirmAction = useStoreModalConfirmAction(
     (store) => store.setOpen
-  )
+  );
   return (
-    <section className='flex overflow-x-auto gap-4 py-4 scrollbar-thin'>
+    <section className='flex overflow-x-auto gap-4 pb-2 pt-4 scrollbar-thin mb-10'>
       {budgetAccounts.length > 0 && (
         <CustomButton
-          onClick={() => openModalManageAccount()}
-          className='bg-night-600 px-4 outline outline-white/40 ml-1'
+          onClick={() => openModalManageAccount(MANAGER_MODALS.budgetAccount)}
+          className='bg-night-600 px-4 outline outline-white/40 ml-[1px]'
         >
           <IconPlus strokeWidth={2.5} />
         </CustomButton>
@@ -27,6 +26,7 @@ export default function DashboardAccounts() {
         <BudgetAccount
           key={account.id}
           account={account}
+          isLoading={isDeleting}
           onRemove={() =>
             openModalConfirmAction({
               title: 'Remove account',
@@ -34,19 +34,27 @@ export default function DashboardAccounts() {
                 <>
                   Are you sure you want to remove the account named{' '}
                   <strong>{account.name}</strong>?
+                  <br />
+                  <br />
+                  This will also remove all the transactions associated with
+                  this account.
                 </>
               ),
               onConfirm: () => {
-                console.log('remove account')
+                remove(account.id);
               }
             })
           }
-          onEdit={() => openModalManageAccount(account)}
+          onEdit={() =>
+            openModalManageAccount(MANAGER_MODALS.budgetAccount, {
+              data: account
+            })
+          }
         />
       ))}
       {budgetAccounts.length === 0 && (
         <CustomButton
-          onClick={() => openModalManageAccount()}
+          onClick={() => openModalManageAccount(MANAGER_MODALS.budgetAccount)}
           className='ml-auto flex items-center gap-1 bg-steel-blue'
         >
           <IconPlus strokeWidth={2.5} />{' '}
@@ -54,5 +62,5 @@ export default function DashboardAccounts() {
         </CustomButton>
       )}
     </section>
-  )
+  );
 }

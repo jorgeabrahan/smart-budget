@@ -1,15 +1,15 @@
 import { supabase } from '@/config/supabase';
 import { TypeRequestResponse } from '@/lib/types/Request';
-import { TypeBudgetAccountsRegistry } from '@/lib/types/Tables';
+import { TypeTagsRegistry } from '@/lib/types/Tables';
 
-export class ServiceBudgetAccount {
+export class ServiceTags {
   static async create(
-    account: Omit<TypeBudgetAccountsRegistry, 'id' | 'created_at'>
-  ): Promise<TypeRequestResponse<TypeBudgetAccountsRegistry | null>> {
+    tag: Omit<TypeTagsRegistry, 'id'>
+  ): Promise<TypeRequestResponse<TypeTagsRegistry | null>> {
     try {
       const { data, error } = await supabase
-        .from('budget_accounts')
-        .insert(account)
+        .from('tags')
+        .insert(tag)
         .select()
         .maybeSingle();
       if (error) throw error;
@@ -25,14 +25,13 @@ export class ServiceBudgetAccount {
     }
   }
   static async update(
-    account: Omit<TypeBudgetAccountsRegistry, 'created_at'>
-  ): Promise<TypeRequestResponse<TypeBudgetAccountsRegistry | null>> {
+    tag: Omit<TypeTagsRegistry, 'created_at'>
+  ): Promise<TypeRequestResponse<TypeTagsRegistry | null>> {
     try {
       const { data, error } = await supabase
-        .from('budget_accounts')
-        .update(account)
-        .eq('id', account.id)
-        .eq('id_user', account.id_user)
+        .from('tags')
+        .update(tag)
+        .eq('id', tag.id)
         .select()
         .maybeSingle();
       if (error) throw error;
@@ -49,10 +48,7 @@ export class ServiceBudgetAccount {
   }
   static async remove(id: number): Promise<TypeRequestResponse<boolean>> {
     try {
-      const { error } = await supabase
-        .from('budget_accounts')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('tags').delete().eq('id', id);
       if (error) throw error;
       return {
         data: true,
@@ -67,15 +63,12 @@ export class ServiceBudgetAccount {
   }
   static async findAll(
     idUser: string
-  ): Promise<TypeRequestResponse<TypeBudgetAccountsRegistry[]>> {
+  ): Promise<TypeRequestResponse<TypeTagsRegistry[]>> {
     try {
       const { data, error } = await supabase
-        .from('budget_accounts')
-        .select(
-          'id, id_user, name, description, color, id_currency, created_at'
-        )
-        .eq('id_user', idUser)
-        .order('created_at', { ascending: false });
+        .from('tags')
+        .select('id, id_user, name, color')
+        .eq('id_user', idUser);
       if (error) throw error;
       return {
         data: data ?? [],
