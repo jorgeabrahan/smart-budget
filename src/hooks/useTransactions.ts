@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSignedIn } from './useSignedIn';
 import { ServiceTransaction } from '@/services/ServiceTransaction';
 import { REQUEST_STATUS } from '@/lib/constants/requests';
-import { useStoreTransactions } from '@/stores/useStoreTransactions';
+import {
+  TypeTransactionsFilters,
+  useStoreTransactions
+} from '@/stores/useStoreTransactions';
 import {
   TypeTransactionLoanDetailsRegistry,
   TypeTransactionsRegistry,
@@ -27,15 +30,6 @@ export const useTransactions = () => {
     (store) => store.setRequestStatus
   );
   const filters = useStoreTransactions((store) => store.filters);
-  const [currentFilters, setCurrentFilters] = useState<{
-    idAccount: number | null;
-    idTags: number[];
-    year: number | null;
-  }>({
-    idAccount: null,
-    idTags: [],
-    year: null
-  });
   const [isInserting, setIsInserting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -116,7 +110,16 @@ export const useTransactions = () => {
     budgetAccount: Omit<
       TypeTransactionsRegistry,
       'created_at' | 'id_parent_transaction'
-    >
+    >,
+    additional: {
+      transactionLoanDetails: TypeTransactionLoanDetailsRegistry | null;
+      transactionTags: number[];
+      currentTransactionTags: TypeTransactionTagsRegistry[];
+    } = {
+      transactionLoanDetails: null,
+      transactionTags: [],
+      currentTransactionTags: []
+    }
   ): Promise<boolean> => {
     if (!user) return false;
     setIsUpdating(true);
@@ -125,7 +128,67 @@ export const useTransactions = () => {
       setIsUpdating(false);
       return false;
     }
-    updateTransaction(data);
+    let fullTransaction = data;
+    if (
+      additional.transactionLoanDetails?.id &&
+      additional.transactionLoanDetails?.id_transaction
+    ) {
+      const { data: loanDetails, error: errorLoanDetails } =
+        await ServiceTransaction.updateLoanDetails(
+          additional.transactionLoanDetails
+        );
+      if (!loanDetails || errorLoanDetails) {
+        setIsInserting(false);
+        return false;
+      }
+      fullTransaction = {
+        ...fullTransaction,
+        transaction_loan_details: loanDetails
+      };
+    }
+    const currentTagIds = additional.currentTransactionTags.map(
+      (tag) => tag.id_tag
+    );
+    const tagsToAdd = additional.transactionTags.filter(
+      (tagId) => !currentTagIds.includes(tagId)
+    );
+    const tagsToRemove = additional.currentTransactionTags.filter(
+      (tag) => !additional.transactionTags.includes(tag.id_tag)
+    );
+    try {
+      let newTags: TypeTransactionTagsRegistry[] = [];
+      if (tagsToAdd.length > 0) {
+        const addPromises = tagsToAdd.map((tagId) =>
+          ServiceTransaction.createTag({
+            id_transaction: data.id,
+            id_tag: tagId
+          })
+        );
+        const createdTags = await Promise.all(addPromises);
+        newTags = createdTags
+          .map((res) => res.data)
+          .filter((tag): tag is TypeTransactionTagsRegistry => !!tag);
+      }
+      if (tagsToRemove.length > 0) {
+        const removePromises = tagsToRemove.map((tag) =>
+          ServiceTransaction.removeTag(tag.id)
+        );
+        await Promise.all(removePromises);
+      }
+      fullTransaction = {
+        ...fullTransaction,
+        transaction_tags: [
+          ...additional.currentTransactionTags.filter((tag) =>
+            additional.transactionTags.includes(tag.id_tag)
+          ),
+          ...newTags
+        ]
+      };
+    } catch {
+      setIsUpdating(false);
+      return false;
+    }
+    updateTransaction(fullTransaction);
     setIsUpdating(false);
     return true;
   };
@@ -141,6 +204,23 @@ export const useTransactions = () => {
     setIsDeleting(false);
     return true;
   };
+  const loadTransactions = useCallback(
+    async (idUser: string, filters: Partial<TypeTransactionsFilters>) => {
+      if (filters.year == null) return;
+      const { data, error } = await ServiceTransaction.findAll(
+        idUser,
+        filters.year,
+        {
+          idAccount: filters.idAccount ?? null,
+          idTags: filters.idTags ?? []
+        }
+      );
+      if (error || !data) return setRequestStatus(REQUEST_STATUS.error);
+      setTransactions(data);
+      setRequestStatus(REQUEST_STATUS.success);
+    },
+    [setRequestStatus, setTransactions]
+  );
   useEffect(() => {
     if (
       !user ||
@@ -149,42 +229,16 @@ export const useTransactions = () => {
     ) {
       return;
     }
-
-    const loadTransactions = async (idUser: string, year: number) => {
-      const { data, error } = await ServiceTransaction.findAll(idUser, year, {
-        idAccount: filters.idAccount,
-        idTags: filters.idTags
-      });
-      if (error || !data) return setRequestStatus(REQUEST_STATUS.error);
-      setTransactions(data);
-      setRequestStatus(REQUEST_STATUS.success);
-    };
-    if (
-      currentFilters.year === filters.year &&
-      currentFilters.idAccount === filters.idAccount &&
-      currentFilters.idTags.length === filters.idTags.length &&
-      transactions.length > 0
-    ) {
-      return;
-    }
     setRequestStatus(REQUEST_STATUS.loading);
-    loadTransactions(user.id, filters.year);
-  }, [
-    user,
-    filters,
-    transactions,
-    requestStatus,
-    setRequestStatus,
-    currentFilters,
-    setTransactions
-  ]);
+    loadTransactions(user.id, filters);
+  }, [filters]);
   return {
     transactions,
     requestStatus,
-    setCurrentFilters,
     isInserting,
     isUpdating,
     isDeleting,
+    filters,
     create,
     update,
     remove

@@ -8,7 +8,7 @@ export default function CustomSelect({
   defaultOptionLabel = 'Select an option',
   containerClassName = '',
   ...props
-}: React.SelectHTMLAttributes<HTMLSelectElement> & {
+}: React.InputHTMLAttributes<HTMLSelectElement> & {
   label: string;
   id: string;
   disabled?: boolean;
@@ -21,7 +21,9 @@ export default function CustomSelect({
 }) {
   return (
     <div
-      className={`relative ${disabled && 'opacity-50'} ${containerClassName}`}
+      className={`relative ${
+        (disabled || props.readOnly) && 'opacity-50 pointer-events-none'
+      } ${containerClassName}`}
     >
       <label
         htmlFor={id}

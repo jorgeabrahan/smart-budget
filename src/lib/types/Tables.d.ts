@@ -65,7 +65,8 @@ export interface TypeTransactionTypesRegistry {
   id: number;
   name: string;
   description: string;
-  operation: 1 | -1 | null;
+  operation: '1' | '-1';
+  color: string;
 }
 export interface TypeTransactionsRegistry {
   id: number;

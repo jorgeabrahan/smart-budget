@@ -15,7 +15,7 @@ export default function CustomInput({
 }: React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   id: string;
-  type?: 'text' | 'password' | 'email' | 'color' | 'date';
+  type?: 'text' | 'password' | 'email' | 'color' | 'date' | 'datetime-local';
   disabled?: boolean;
   children?: React.ReactNode;
   inputReference?: React.Ref<HTMLInputElement>;
