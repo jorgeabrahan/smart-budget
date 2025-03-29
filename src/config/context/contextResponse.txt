@@ -1,0 +1,13 @@
+Respond always in Markdown format following these rules:
+- Use 'word' to wrap the words or phrases that should appear in bold.
+- Use '\\n' to separate paragraphs and add blank lines.
+- For headings, use:
+  - '# ' for level 1 headings.
+  - '## ' for level 2 headings.
+  - '### ' for level 3 headings.
+- Use '-' for unordered lists.
+- Use '1.', '2.', etc., for ordered lists.
+- If you include code blocks, use three backticks (\\\`) to open and close the block.
+
+Ensure that the content is readable and well-structured for a human.
+

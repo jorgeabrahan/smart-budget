@@ -39,7 +39,7 @@ export default function DashboardTransactions() {
     setFilters({
       year: CURRENT_YEAR
     });
-  }, [statusBudgetAccounts]);
+  }, [statusBudgetAccounts, budgetAccounts.length]);
   const isLoadingBudgetAccounts = useMemo(
     () => statusBudgetAccounts === REQUEST_STATUS.loading,
     [statusBudgetAccounts]
@@ -70,7 +70,6 @@ export default function DashboardTransactions() {
     const totalBalance = totalIncome + totalExpense;
     return { totalIncome, totalExpense, totalBalance };
   }, [transactions, transactionTypes]);
-
   if (filters.year == null) {
     return null;
   }
@@ -151,26 +150,34 @@ export default function DashboardTransactions() {
           </div>
         ))}
       </div>
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-2 mb-8'>
-        <div className='p-4 border rounded-lg bg-green-100'>
-          <h4 className='text-lg font-semibold text-green-800'>Total Income</h4>
-          <p className='text-xl font-bold text-green-900'>
-            {UtilsFormat.amountToCurrency(totals.totalIncome)}
-          </p>
+      {transactions.length > 0 && (
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-2 mb-8'>
+          <div className='p-4 border rounded-lg bg-green-100'>
+            <h4 className='text-lg font-semibold text-green-800'>
+              Total Income
+            </h4>
+            <p className='text-xl font-bold text-green-900'>
+              {UtilsFormat.amountToCurrency(totals.totalIncome)}
+            </p>
+          </div>
+          <div className='p-4 border rounded-lg bg-red-100'>
+            <h4 className='text-lg font-semibold text-red-800'>
+              Total Expense
+            </h4>
+            <p className='text-xl font-bold text-red-900'>
+              {UtilsFormat.amountToCurrency(totals.totalExpense)}
+            </p>
+          </div>
+          <div className='p-4 border rounded-lg bg-blue-100'>
+            <h4 className='text-lg font-semibold text-blue-800'>
+              Total Balance
+            </h4>
+            <p className='text-xl font-bold text-blue-900'>
+              {UtilsFormat.amountToCurrency(totals.totalBalance)}
+            </p>
+          </div>
         </div>
-        <div className='p-4 border rounded-lg bg-red-100'>
-          <h4 className='text-lg font-semibold text-red-800'>Total Expense</h4>
-          <p className='text-xl font-bold text-red-900'>
-            {UtilsFormat.amountToCurrency(totals.totalExpense)}
-          </p>
-        </div>
-        <div className='p-4 border rounded-lg bg-blue-100'>
-          <h4 className='text-lg font-semibold text-blue-800'>Total Balance</h4>
-          <p className='text-xl font-bold text-blue-900'>
-            {UtilsFormat.amountToCurrency(totals.totalBalance)}
-          </p>
-        </div>
-      </div>
+      )}
     </>
   );
 }

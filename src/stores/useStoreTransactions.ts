@@ -12,6 +12,7 @@ export interface TypeTransactionsFilters {
 interface Store {
   transactions: TypeTransactionsRegistry[];
   requestStatus: TypeRequestStatus;
+  currentYear: number;
   filters: {
     idAccount: number | null;
     idTags: number[];
@@ -23,6 +24,7 @@ interface Store {
   removeTransaction: (id: number) => void;
   setRequestStatus: (requestStatus: TypeRequestStatus) => void;
   setFilters: (filters: Partial<TypeTransactionsFilters>) => void;
+  reset: () => void;
 }
 const INITIAL_STATE = {
   transactions: [],
@@ -59,5 +61,16 @@ export const useStoreTransactions = create<Store>((set) => ({
         ...state.filters,
         ...filters
       }
-    }))
+    })),
+  reset: () =>
+    set({
+      transactions: [],
+      requestStatus: REQUEST_STATUS.notStarted,
+      currentYear: new Date().getFullYear(),
+      filters: {
+        idAccount: null,
+        idTags: [],
+        year: null
+      }
+    })
 }));

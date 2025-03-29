@@ -97,7 +97,7 @@ export default function ModalManageTransaction() {
   }, [filters.year]);
   useEffect(() => {
     if (!open) return;
-    setIdType(editingTransaction?.id_type.toString() ?? 'default');
+    setIdType(editingTransaction?.id_type?.toString() ?? 'default');
     if (!isEditingTransaction) {
       setTransactionTags([]);
       return;
@@ -283,10 +283,14 @@ export default function ModalManageTransaction() {
           <CustomSelect
             label='Type'
             id='idType'
-            options={transactionTypes.map((type) => ({
-              value: type.id.toString(),
-              label: type.name
-            }))}
+            options={
+              isLoadingTransactionTypes
+                ? []
+                : transactionTypes.map((type) => ({
+                    value: type.id?.toString(),
+                    label: type.name
+                  }))
+            }
             readOnly={
               isLoadingTransactionTypes ||
               isPerformingAction ||
@@ -301,7 +305,7 @@ export default function ModalManageTransaction() {
             label='Account'
             id='idBudgetAccount'
             options={budgetAccounts.map((account) => ({
-              value: account.id.toString(),
+              value: account.id?.toString(),
               label: `${
                 currencies.find((c) => c.id === account.id_currency)?.iso_code
               } - ${account.name}`
@@ -314,12 +318,12 @@ export default function ModalManageTransaction() {
             }
             defaultValue={
               isEditingTransaction
-                ? editingTransaction?.id_budget_account.toString()
+                ? editingTransaction?.id_budget_account?.toString()
                 : filters.idAccount?.toString()
             }
             key={
               isEditingTransaction
-                ? editingTransaction?.id_budget_account.toString()
+                ? editingTransaction?.id_budget_account?.toString()
                 : filters.idAccount?.toString()
             }
             required

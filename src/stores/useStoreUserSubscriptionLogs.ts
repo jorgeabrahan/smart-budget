@@ -1,26 +1,27 @@
-import { REQUEST_STATUS } from '@/lib/constants/requests'
-import { TypeRequestStatus } from '@/lib/types/Request'
-import { TypeSubscriptionLogsRegistry } from '@/lib/types/Tables'
-import { create } from 'zustand'
+import { REQUEST_STATUS } from '@/lib/constants/requests';
+import { TypeRequestStatus } from '@/lib/types/Request';
+import { TypeSubscriptionLogsRegistry } from '@/lib/types/Tables';
+import { create } from 'zustand';
 
 interface Store {
   subscriptionLogs: {
-    [page: string]: TypeSubscriptionLogsRegistry[]
-  }
+    [page: string]: TypeSubscriptionLogsRegistry[];
+  };
   pagination: {
-    pages: number
-    count: number
-  }
-  requestStatus: TypeRequestStatus
+    pages: number;
+    count: number;
+  };
+  requestStatus: TypeRequestStatus;
   setSubscriptionLogsPage: (
     page: number,
     subscriptionLogs: TypeSubscriptionLogsRegistry[],
     pagination: {
-      pages: number
-      count: number
+      pages: number;
+      count: number;
     }
-  ) => void
-  setRequestStatus: (requestStatus: TypeRequestStatus) => void
+  ) => void;
+  setRequestStatus: (requestStatus: TypeRequestStatus) => void;
+  reset: () => void;
 }
 const INITIAL_STATE = {
   subscriptionLogs: {},
@@ -29,7 +30,7 @@ const INITIAL_STATE = {
     count: 0
   },
   requestStatus: REQUEST_STATUS.notStarted
-}
+};
 export const useStoreUserSubscriptionLogs = create<Store>((set) => ({
   subscriptionLogs: INITIAL_STATE.subscriptionLogs,
   pagination: INITIAL_STATE.pagination,
@@ -46,5 +47,11 @@ export const useStoreUserSubscriptionLogs = create<Store>((set) => ({
   setRequestStatus: (requestStatus) =>
     set({
       requestStatus
+    }),
+  reset: () =>
+    set({
+      subscriptionLogs: INITIAL_STATE.subscriptionLogs,
+      pagination: INITIAL_STATE.pagination,
+      requestStatus: REQUEST_STATUS.notStarted
     })
-}))
+}));
