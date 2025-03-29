@@ -31,6 +31,29 @@ export class ServiceTransaction {
       };
     }
   }
+  static async updateLoanDetails(
+    transactionLoanDetails: TypeTransactionLoanDetailsRegistry
+  ) {
+    try {
+      const { data, error } = await supabase
+        .from('transaction_loan_details')
+        .update(transactionLoanDetails)
+        .eq('id', transactionLoanDetails.id)
+        .eq('id_transaction', transactionLoanDetails.id_transaction)
+        .select()
+        .maybeSingle();
+      if (error) throw error;
+      return {
+        data,
+        error: null
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error
+      };
+    }
+  }
   static async createLoanDetails(
     transactionLoanDetails: Omit<TypeTransactionLoanDetailsRegistry, 'id'>
   ) {
@@ -48,6 +71,24 @@ export class ServiceTransaction {
     } catch (error) {
       return {
         data: null,
+        error
+      };
+    }
+  }
+  static async removeTag(id: number) {
+    try {
+      const { error } = await supabase
+        .from('transaction_tags')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+      return {
+        data: true,
+        error: null
+      };
+    } catch (error) {
+      return {
+        data: false,
         error
       };
     }
@@ -139,7 +180,8 @@ export class ServiceTransaction {
         )
         .eq('id_user', idUser)
         .gte('date', startDate.toISOString())
-        .lt('date', endDate.toISOString());
+        .lt('date', endDate.toISOString())
+        .order('date', { ascending: false });
 
       if (optionalFilters.idAccount != null) {
         query = query.eq('id_budget_account', optionalFilters.idAccount);

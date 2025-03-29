@@ -5,13 +5,19 @@ import { MANAGER_MODALS } from '@/lib/constants/modals';
 import { useStoreModalConfirmAction } from '@/stores/modals/useStoreModalConfirmAction';
 import { useStoreModalManager } from '@/stores/modals/useStoreModalManager';
 import BudgetAccount from './dashboard-accounts/BudgetAccount';
+import { useStoreSignedInUser } from '@/stores/useStoreSignedInUser';
+import { usePlans } from '@/hooks/usePlans';
 
 export default function DashboardAccounts() {
+  const user = useStoreSignedInUser((store) => store.user);
+  const { plans } = usePlans();
   const { budgetAccounts, remove, isDeleting } = useBudgetAccounts();
   const openModalManageAccount = useStoreModalManager((store) => store.setOpen);
   const openModalConfirmAction = useStoreModalConfirmAction(
     (store) => store.setOpen
   );
+  const userPlan = plans.find((p) => p.id === user?.id_plan);
+  console.log(userPlan);
   return (
     <section className='flex overflow-x-auto gap-4 pb-2 pt-4 scrollbar-thin mb-10'>
       {budgetAccounts.length > 0 && (

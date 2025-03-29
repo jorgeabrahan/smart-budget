@@ -1,6 +1,6 @@
-import { supabase } from '@/config/supabase'
-import { TypeRequestResponse } from '@/lib/types/Request'
-import { TypeTransactionTypesRegistry } from '@/lib/types/Tables'
+import { supabase } from '@/config/supabase';
+import { TypeRequestResponse } from '@/lib/types/Request';
+import { TypeTransactionTypesRegistry } from '@/lib/types/Tables';
 
 export class ServiceTransactionType {
   static async getAll(): Promise<
@@ -9,17 +9,17 @@ export class ServiceTransactionType {
     try {
       const { data, error } = await supabase
         .from('transaction_types')
-        .select('id, name, description, operation')
-      if (error) throw error
+        .select('id, name, description, operation, color');
+      if (error) throw error;
       return {
         data: data ?? [],
         error
-      }
+      };
     } catch (error) {
       return {
         data: [],
         error
-      }
+      };
     }
   }
 }

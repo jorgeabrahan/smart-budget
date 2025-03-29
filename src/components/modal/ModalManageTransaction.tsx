@@ -12,7 +12,7 @@ import CustomInput from '../custom/CustomInput';
 import CustomTextarea from '../custom/CustomTextarea';
 import { useTransactionTypes } from '@/hooks/useTransactionTypes';
 import { useCurrencies } from '@/hooks/useCurrencies';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CustomButton from '../custom/CustomButton';
 import { useTransactions } from '@/hooks/useTransactions';
 import { REQUEST_STATUS } from '@/lib/constants/requests';
@@ -23,15 +23,20 @@ import IconSettings from '@/assets/svg/IconSettings';
 import { useStoreModalBasic } from '@/stores/modals/useStoreModalBasic';
 import { useTags } from '@/hooks/useTags';
 import TransactionTag from '../general/TransactionTag';
-import { useStoreDashboard } from '@/stores/useStoreDashboard';
 import { UtilsFormat } from '@/lib/utils/UtilsFormat';
 import { UtilsFormValidate } from '@/lib/utils/UtilsFormValidate';
 
-const CURRENT_MONTH = new Date().getMonth() + 1;
-const CURRENT_DAY = new Date().getDate();
+const CURRENT_DATE = new Date();
+const CURRENT_MONTH = UtilsFormat.normalizeToTwoDigits(
+  CURRENT_DATE.getMonth() + 1
+);
+const CURRENT_DAY = UtilsFormat.normalizeToTwoDigits(CURRENT_DATE.getDate());
+const CURRENT_HOUR = UtilsFormat.normalizeToTwoDigits(CURRENT_DATE.getHours());
+const CURRENT_MINUTE = UtilsFormat.normalizeToTwoDigits(
+  CURRENT_DATE.getMinutes()
+);
 export default function ModalManageTransaction() {
   const setOpenBasicModal = useStoreModalBasic((store) => store.setOpen);
-  const filters = useStoreDashboard((store) => store.filters);
   const modal = useStoreModalManager((store) => store.modal);
   const open = useStoreModalManager((store) => store.open);
   const editingTransaction = useStoreModalManager(
@@ -39,19 +44,18 @@ export default function ModalManageTransaction() {
   ) as TypeTransactionsRegistry | null;
   const action = useStoreModalManager((store) => store.action);
   const setClose = useStoreModalManager((store) => store.setClose);
+
   const [idType, setIdType] = useState<string>(
-    editingTransaction?.id_budget_account?.toString() ?? 'default'
+    editingTransaction?.id_type?.toString() ?? 'default'
   );
   const { budgetAccounts, requestStatus: statusBudgetAccounts } =
     useBudgetAccounts();
   const { transactionTypes, requestStatus: statusTransactionTypes } =
     useTransactionTypes();
   const { currencies, requestStatus: statusCurrencies } = useCurrencies();
-  const { tags, requestStatus } = useTags();
-  const { create, update, isInserting, isUpdating } = useTransactions();
-  const idSelectedAccount = useStoreDashboard(
-    (store) => store.idSelectedAccount
-  );
+  const { tags, requestStatus: statusTags } = useTags();
+  const { create, update, isInserting, isUpdating, filters } =
+    useTransactions();
   const [tagAutocomplete, setTagAutocomplete] = useState<string>('');
   const [transactionTags, setTransactionTags] = useState<TypeTagsRegistry[]>(
     []
@@ -61,8 +65,8 @@ export default function ModalManageTransaction() {
     [action, editingTransaction]
   );
   const isLoadingTags = useMemo(
-    () => requestStatus === REQUEST_STATUS.loading,
-    [requestStatus]
+    () => statusTags === REQUEST_STATUS.loading,
+    [statusTags]
   );
   const isLoadingBudgetAccounts = useMemo(
     () => statusBudgetAccounts === REQUEST_STATUS.loading,
@@ -91,6 +95,24 @@ export default function ModalManageTransaction() {
   const isCurrentYear = useMemo(() => {
     return filters.year === new Date().getFullYear();
   }, [filters.year]);
+  useEffect(() => {
+    if (!open) return;
+    setIdType(editingTransaction?.id_type.toString() ?? 'default');
+    if (!isEditingTransaction) {
+      setTransactionTags([]);
+      return;
+    }
+    if (
+      tags.length === 0 ||
+      !Array.isArray(editingTransaction?.transaction_tags) ||
+      editingTransaction?.transaction_tags.length === 0
+    ) {
+      return;
+    }
+    const ttagsIds = editingTransaction?.transaction_tags?.map((t) => t.id_tag);
+    const ttags = tags.filter((t) => ttagsIds?.includes(t.id));
+    setTransactionTags(ttags);
+  }, [open, statusTags, editingTransaction, tags]);
 
   if (modal !== MANAGER_MODALS.budgetTransaction) {
     return null;
@@ -204,7 +226,7 @@ export default function ModalManageTransaction() {
       amount: parseFloat(formEntries.amount),
       id_type: parseInt(formEntries.idType),
       id_budget_account: parseInt(formEntries.idBudgetAccount),
-      date: formEntries.date
+      date: new Date(formEntries.date).toISOString()
     };
     const transactionLoanDetails =
       isLoanTransaction && formEntries.interestRate && formEntries.installments
@@ -221,13 +243,23 @@ export default function ModalManageTransaction() {
       });
     }
     if (action === MODAL_BASIC_ACTIONS.edit && editingTransaction != null) {
-      // TODO: currently only updating the transaction is possible
-      // user should also be able to update the transaction loan details and tags
-      isSuccess = await update({
-        ...transaction,
-        id: editingTransaction.id,
-        id_user: editingTransaction.id_user
-      });
+      isSuccess = await update(
+        {
+          ...transaction,
+          id: editingTransaction.id,
+          id_user: editingTransaction.id_user
+        },
+        {
+          transactionLoanDetails: editingTransaction?.transaction_loan_details
+            ? {
+                ...editingTransaction.transaction_loan_details,
+                ...transactionLoanDetails
+              }
+            : null,
+          transactionTags: transactionTags.map((tag) => tag.id),
+          currentTransactionTags: editingTransaction.transaction_tags ?? []
+        }
+      );
     }
     if (isSuccess) {
       form.reset();
@@ -236,9 +268,7 @@ export default function ModalManageTransaction() {
     }
     UtilsToast.error('Something went wrong');
   };
-  const CURRENT_DATE = `${filters.year}-${UtilsFormat.normalizeToTwoDigits(
-    CURRENT_MONTH
-  )}-${UtilsFormat.normalizeToTwoDigits(CURRENT_DAY)}`;
+  const CURRENT_DATE_TIME = `${filters.year}-${CURRENT_MONTH}-${CURRENT_DAY}T${CURRENT_HOUR}:${CURRENT_MINUTE}`;
   return (
     <WrapperModal
       title={`${
@@ -257,7 +287,7 @@ export default function ModalManageTransaction() {
               value: type.id.toString(),
               label: type.name
             }))}
-            disabled={
+            readOnly={
               isLoadingTransactionTypes ||
               isPerformingAction ||
               isEditingTransaction
@@ -276,7 +306,7 @@ export default function ModalManageTransaction() {
                 currencies.find((c) => c.id === account.id_currency)?.iso_code
               } - ${account.name}`
             }))}
-            disabled={
+            readOnly={
               isLoadingBudgetAccounts ||
               isLoadingCurrencies ||
               isPerformingAction ||
@@ -285,31 +315,33 @@ export default function ModalManageTransaction() {
             defaultValue={
               isEditingTransaction
                 ? editingTransaction?.id_budget_account.toString()
-                : idSelectedAccount?.toString()
+                : filters.idAccount?.toString()
             }
             key={
               isEditingTransaction
                 ? editingTransaction?.id_budget_account.toString()
-                : idSelectedAccount?.toString()
+                : filters.idAccount?.toString()
             }
             required
           />
           <CustomInput
             label='Date'
             id='date'
-            type='date'
+            type='datetime-local'
             disabled={isPerformingAction}
             defaultValue={
-              editingTransaction?.date ?? isCurrentYear
-                ? CURRENT_DATE
-                : `${filters.year}-01-01`
+              isEditingTransaction && editingTransaction?.date
+                ? UtilsFormat.timestampToDatetimeLocal(editingTransaction?.date)
+                : isCurrentYear
+                ? CURRENT_DATE_TIME
+                : `${filters.year}-01-01T00:00`
             }
-            min={`${filters.year}-01-01`}
-            max={`${filters.year}-12-31`}
+            min={`${filters.year}-01-01T00:00`}
+            max={`${filters.year}-12-31T00:00`}
             required
           />
           <CustomInput
-            label='Name'
+            label='Title'
             id='name'
             type='text'
             disabled={isPerformingAction}
@@ -322,7 +354,6 @@ export default function ModalManageTransaction() {
             rows={3}
             disabled={isPerformingAction}
             defaultValue={editingTransaction?.description ?? ''}
-            required
           />
           <CustomInput
             label='Amount'
