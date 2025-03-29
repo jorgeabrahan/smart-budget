@@ -11,6 +11,7 @@ interface Store {
   removeBudgetAccount: (id: number) => void;
   setBudgetAccounts: (budgetAccounts: TypeBudgetAccountsRegistry[]) => void;
   setRequestStatus: (requestStatus: TypeRequestStatus) => void;
+  reset: () => void;
 }
 const INITIAL_STATE = {
   budgetAccounts: [],
@@ -39,5 +40,10 @@ export const useStoreBudgetAccounts = create<Store>((set) => ({
   setRequestStatus: (requestStatus) =>
     set({
       requestStatus
+    }),
+  reset: () =>
+    set({
+      budgetAccounts: [],
+      requestStatus: REQUEST_STATUS.notStarted
     })
 }));

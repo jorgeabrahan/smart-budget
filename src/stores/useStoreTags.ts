@@ -10,6 +10,7 @@ interface Store {
   addTag: (tag: TypeTagsRegistry) => void;
   removeTag: (id: number) => void;
   setRequestStatus: (requestStatus: TypeRequestStatus) => void;
+  reset: () => void;
 }
 const INITIAL_STATE = {
   tags: [],
@@ -33,5 +34,10 @@ export const useStoreTags = create<Store>((set) => ({
   setRequestStatus: (requestStatus) =>
     set({
       requestStatus
+    }),
+  reset: () =>
+    set({
+      tags: [],
+      requestStatus: REQUEST_STATUS.notStarted
     })
 }));
