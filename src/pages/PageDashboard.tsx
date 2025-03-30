@@ -1,3 +1,4 @@
+import AIBubble from '@/components/bubbles/AIBubble';
 import ModalManageAccount from '@/components/modal/ModalManageBudgetAccount';
 import ModalManageTags from '@/components/modal/ModalManageTags';
 import ModalManageTransaction from '@/components/modal/ModalManageTransaction';
@@ -14,6 +15,7 @@ export default function PageDashboard() {
         <DashboardAccounts />
         <DashboardTransactions />
       </WrapperDelimiter>
+      <AIBubble />
       <ModalManageAccount />
       <ModalManageTransaction />
       <ModalManageTags />

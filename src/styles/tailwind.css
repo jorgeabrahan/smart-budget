@@ -46,7 +46,7 @@ select {
 
 button {
   cursor: pointer;
-  @apply transition-[transform,_background] duration-300;
+  @apply transition-[transform,_scale,_background] duration-300;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -69,4 +69,42 @@ button {
 
 .field {
   @apply bg-night-700 block w-full px-3 pt-8 pb-3 text-sm outline-none rounded-lg border border-white/40 focus:border-white/80 transition-colors duration-300;
+}
+
+.model-response-content p,
+.model-response-content ul,
+.model-response-content ol {
+  @apply mb-6;
+}
+.model-response-content li {
+  @apply ml-4;
+}
+.model-response-content ol,
+.model-response-content ul {
+  list-style-position: inside;
+  @apply space-y-1;
+}
+.model-response-content ol li > p,
+.model-response-content ul li > p {
+  margin-bottom: 0;
+}
+.model-response-content ul {
+  list-style: disc;
+}
+.model-response-content ol {
+  list-style: decimal;
+}
+.model-response-content h1 {
+  @apply text-2xl;
+}
+.model-response-content h2 {
+  @apply text-xl;
+}
+.model-response-content h3 {
+  @apply text-lg;
+}
+.model-response-content h1,
+.model-response-content h2,
+.model-response-content h3 {
+  @apply font-bold mb-4;
 }
